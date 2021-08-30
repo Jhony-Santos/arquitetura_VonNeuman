@@ -3,43 +3,64 @@ import org.w3c.dom.css.CSSImportRule;
 import java.util.ArrayList;
 
 
+/*
+
+initialAdress - com essa variavel eu consigo identificar se um enderço está na cache ou nao (cache hit/miss)
+se chegar uma solicitação de leitura do endereco 7, vc precisa primeiro identificar se o endereço 7 está na cache ou não
+ considerar leitura da primeira vez
+ considerar proximas leituras
+ */
+
+
+            /*ram=[1,2,3,4,5,6,7,8,9,10]
+            cache=[6,7,8]*/
+
+
+
+
+
 
 public class Cache {
 
     Ram ram = new Ram(7);
 
     int[] memory_cache;
-    int initialAdress=0;
+
+
+
+    int initialAdress;  // Ele representa qual a posição da ram, está representando na posição 0 da cache
 
     public Cache(int size_cache, Ram ram) {
         memory_cache = new int[size_cache];
 
     }
-    // considerar leitura da primeira vez
-    // considerar proximas leituras
+
     public int read(int posicao) throws Exception {
 
 
-        int stop=memory_cache.length;
+        int position_zero_cache=memory_cache[0];
 
-        if (posicao > memory_cache.length) {
+
+        if (posicao > memory_cache.length) { // cache miss
             throw new Exception("Endereço inválido");
         }
 
-        else if (posicao < memory_cache.length) {
-
-            int fim= memory_cache.length;
-
-            for(int inicio=posicao; inicio < fim ;++inicio){
-
-                  memory_cache[inicio]=ram.enderecos[inicio]; //memory_cache[inicio]=ram.read(inicio);
-              }
-        }
-        else if(posicao < memory_cache.length){
-            if(posicao>=initialAdress && posicao> memory_cache.length){}
+        else if (posicao <= memory_cache.length && posicao < initialAdress + memory_cache.length) {
 
 
-            for(initialAdress = 0;initialAdress == stop; initialAdress++){
+                   initialAdress=ram.enderecos.length - posicao;
+                   System.out.println(initialAdress);
+
+
+
+              if (memory_cache == null) {
+                  System.out.println("Temos a posição mas não tem nada");
+
+            }
+
+
+
+              for(initialAdress = 0; initialAdress == memory_cache.length; initialAdress++){
                 memory_cache[initialAdress]=ram.enderecos[posicao];
                 posicao+=1;
                 initialAdress+=1;
