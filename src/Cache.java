@@ -3,20 +3,29 @@ import org.w3c.dom.css.CSSImportRule;
 import java.util.ArrayList;
 
 
+//initialAdress = ram.enderecos.length - memory_cache.length;
+
+            /*for(initialAdress = 0; initialAdress == memory_cache.length; initialAdress++){
+                memory_cache[initialAdress]=ram.enderecos[posicao];
+                posicao+=1;
+                initialAdress+=1;
+            }*/
+
+
 /*
 
-initialAdress - com essa variavel eu consigo identificar se um enderço está na cache ou nao (cache hit/miss)
+initialAdress - com essa variavel eu consigo identificar se um endereço está na cache ou nao (cache hit/miss)
 se chegar uma solicitação de leitura do endereco 7, vc precisa primeiro identificar se o endereço 7 está na cache ou não
  considerar leitura da primeira vez
  considerar proximas leituras
  */
 
+//cache miss -> copia do bloco
 
+//acesso a ram solicitando todas as posicoes da ram que cabem na cache a partir da posicao
+// nesse caso eu preciso alterar o valor de initialAdress -> initialAdress=posicao
             /*ram=[1,2,3,4,5,6,7,8,9,10]
             cache=[6,7,8]*/
-
-
-
 
 
 
@@ -28,7 +37,7 @@ public class Cache {
 
 
 
-    int initialAdress;  // Ele representa qual a posição da ram, está representando na posição 0 da cache
+    int initialAdress=0;  // Ele representa qual a posição da ram, está representando na posição 0 da cache
 
     public Cache(int size_cache, Ram ram) {
         memory_cache = new int[size_cache];
@@ -38,35 +47,26 @@ public class Cache {
     public int read(int posicao) throws Exception {
 
 
-        int position_zero_cache=memory_cache[0];
-
-
-        if (posicao > memory_cache.length) { // cache miss
+        if (posicao > memory_cache.length) {
             throw new Exception("Endereço inválido");
         }
 
-        else if (posicao <= memory_cache.length && posicao < initialAdress + memory_cache.length) {
-
-
-                   initialAdress=ram.enderecos.length - posicao;
-                   System.out.println(initialAdress);
-
-
-
-              if (memory_cache == null) {
-                  System.out.println("Temos a posição mas não tem nada");
-
-            }
-
-
-
-              for(initialAdress = 0; initialAdress == memory_cache.length; initialAdress++){
-                memory_cache[initialAdress]=ram.enderecos[posicao];
-                posicao+=1;
-                initialAdress+=1;
-            }
+        else if (posicao >= initialAdress && posicao < initialAdress + memory_cache.length) { // cache hit
+                return memory_cache[posicao-initialAdress];
         }
-        return memory_cache[posicao];
+        else {
+
+            initialAdress=posicao;
+
+            for(int i=0;i< memory_cache.length;i++){
+                memory_cache[i]=ram.enderecos[posicao+i];
+
+            }
+            return memory_cache[posicao-initialAdress];
+
+        }
+
+
     }
 
         public void write ( int posicao, int valor) throws Exception {
@@ -77,7 +77,5 @@ public class Cache {
             memory_cache[posicao] = valor;
 
         }
-
-
 
 }
