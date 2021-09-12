@@ -28,7 +28,7 @@ se chegar uma solicitação de leitura do endereco 7, vc precisa primeiro identi
             cache=[6,7,8]*/
 
 
-public class Cache {
+public class Cache_v1 {
 
     Ram ram = new Ram(7);
 
@@ -40,7 +40,7 @@ public class Cache {
     private int[] blocoCopiado=null;
 
 
-    public Cache(int size_cache, Ram ram) {
+    public Cache_v1(int size_cache, Ram ram) {
         this.ram=ram;
         memory_cache = new int[size_cache];
         blocoCopiado=new int[size_cache];
