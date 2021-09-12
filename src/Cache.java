@@ -1,81 +1,75 @@
-import org.w3c.dom.css.CSSImportRule;
-
-import java.util.ArrayList;
-
-
-//initialAdress = ram.enderecos.length - memory_cache.length;
-
-            /*for(initialAdress = 0; initialAdress == memory_cache.length; initialAdress++){
-                memory_cache[initialAdress]=ram.enderecos[posicao];
-                posicao+=1;
-                initialAdress+=1;
-            }*/
-
-
-/*
-
-initialAdress - com essa variavel eu consigo identificar se um endereço está na cache ou nao (cache hit/miss)
-se chegar uma solicitação de leitura do endereco 7, vc precisa primeiro identificar se o endereço 7 está na cache ou não
- considerar leitura da primeira vez
- considerar proximas leituras
- */
-
-//cache miss -> copia do bloco
-
-//acesso a ram solicitando todas as posicoes da ram que cabem na cache a partir da posicao
-// nesse caso eu preciso alterar o valor de initialAdress -> initialAdress=posicao
-            /*ram=[1,2,3,4,5,6,7,8,9,10]
-            cache=[6,7,8]*/
-
 
 
 public class Cache {
 
-    Ram ram = new Ram(7);
+    private Ram ram = null;
+    private int capacidade = 0;
+    private int end_ram = -1;
+    private boolean modif = false;
+    private int [] bloco = null;
 
-    int[] memory_cache;
-
-
-
-    int initialAdress=0;  // Ele representa qual a posição da ram, está representando na posição 0 da cache
-
-    public Cache(int size_cache, Ram ram) {
-        memory_cache = new int[size_cache];
-
+    public Cache(int tam, Ram prox) {
+        ram = prox;
+        capacidade = tam;
+        bloco = new int [capacidade];
     }
 
-    public int read(int posicao) throws Exception {
+    public int Read(int ender) throws Exception {
+        Valida(ender);
+        VerificaCache(ender);
+        return bloco[ender - end_ram];
+    }
 
+    private void Valida(int ender) {
+    }
 
-        if (posicao > memory_cache.length) {
-            throw new Exception("Endereço inválido");
-        }
+    public void Write(int ender, int w) throws Exception {
+        Valida(ender);
+        VerificaCache(ender);
+        bloco[ender - end_ram] = w;
+        modif = true;
+    }
 
-        else if (posicao >= initialAdress && posicao < initialAdress + memory_cache.length) { // cache hit
-                return memory_cache[posicao-initialAdress];
-        }
+    private void VerificaCache(int ender) throws Exception {
+        if (Hit(ender))
+            System.out.println("Cache HIT: " + ender);
         else {
-
-            initialAdress=posicao;
-
-            for(int i=0;i< memory_cache.length;i++){
-                memory_cache[i]=ram.enderecos[posicao+i];
-
-            }
-            return memory_cache[posicao-initialAdress];
-
+            System.err.println("Cache MISS: " + ender);
+            TrazParaCache(ender);
         }
-
-
     }
 
-        public void write ( int posicao, int valor) throws Exception {
+    private boolean Hit(int ender) {
+        if (end_ram > 0)
+            return ((ender >= end_ram) && (ender < end_ram + capacidade));
+        else
+            return false;
+    }
 
-            if (posicao > memory_cache.length) {
-                throw new Exception("Endereço inválido");
-            }
-            memory_cache[posicao] = valor;
+    private void TrazParaCache(int ender) throws Exception {
 
+        if (modif) {
+
+            for (int i=0; i<capacidade; ++i)
+                ram.write(end_ram+i, bloco[i]);
+            modif = false;
         }
 
+        end_ram = ender;
+        for (int a=ender; a<ender+capacidade && a < ram.Size(); ++a)
+            bloco[a-ender] = ram.read(a);
+    }
+
+
+    class InvalidAddress extends Exception {
+        private final int ender;
+        public InvalidAddress(int e) {
+            super();
+            ender = e;
+        }
+        @Override
+        public String toString() {
+            return "Endereço " + ender + " inválido!";
+        }
+    }
 }
