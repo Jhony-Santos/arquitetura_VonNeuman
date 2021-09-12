@@ -7,7 +7,7 @@ especificos.Deve checar se os endereços para escrita/leitura são válidos ou n
 
 
 public class Ram {
-
+    Ram ram;
     int[] enderecos;
 
     public Ram(int size){
@@ -16,27 +16,27 @@ public class Ram {
 
 
 
-    public int read(int posicao) throws Exception {
+    public int read(int ender) throws Exception {
 
-        if(posicao > enderecos.length){
+        if(ender > enderecos.length){
              throw new Exception("Endereço inválido");
         }
-        return enderecos[posicao];
+        return enderecos[ender];
     }
 
-    public void write(int posicao, int valor) throws Exception {
+    public void write(int ender, int valor) throws Exception {
 
-        if(posicao > enderecos.length){
+        if(ender > enderecos.length){
             throw new Exception("Endereço inválido");
         }
-        enderecos[posicao]=valor;
+        enderecos[ender]=valor;
 
     }
 
 
-
-
-
+    public int Size() {
+        return ram.Size();
+    }
 }
 
 
