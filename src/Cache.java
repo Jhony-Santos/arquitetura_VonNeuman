@@ -15,6 +15,13 @@ public class Cache {
     }
 
     public int Read(int ender) throws Exception {
+
+        int x=Integer.parseInt(Integer.toBinaryString(ender));
+        int w=x & 0b111111;
+        int r= x & (x & 0b1111111000000) >> 6;
+        int t=(x & 0b1111111111100000000000) >>13;
+
+
         Valida(ender);
         VerificaCache(ender);
         return bloco[ender - end_ram];
