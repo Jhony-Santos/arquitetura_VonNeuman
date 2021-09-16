@@ -14,8 +14,6 @@ public class Ram {
         enderecos= new int[(int) Math.pow(2,size)];
     }
 
-
-
     public int read(int ender) throws Exception {
 
         if(ender > enderecos.length){

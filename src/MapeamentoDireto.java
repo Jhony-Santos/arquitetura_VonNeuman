@@ -1,5 +1,6 @@
 
 class Initialize {
+
     public static void main(String[] args) {
         int x = 10560325;
         int K = 64;
